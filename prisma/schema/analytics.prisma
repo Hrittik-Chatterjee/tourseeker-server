@@ -1,0 +1,23 @@
+model AnalyticsSnapshot {
+  id               String          @id @default(uuid())
+  guideId          String
+  period           AnalyticsPeriod
+  periodDate       DateTime
+  totalBookings    Int             @default(0)
+  totalRevenue     Float           @default(0)
+  averageRating    Float           @default(0)
+  newReviews       Int             @default(0)
+  viewCount        Int             @default(0)
+  conversionRate   Float           @default(0)
+  topTours         Json?           // Array of {listingId, bookings, revenue}
+  peakDays         Json?           // Array of day names
+  metadata         Json?
+  createdAt        DateTime        @default(now())
+
+  // Relations
+  guide            Guide           @relation(fields: [guideId], references: [id])
+
+  @@unique([guideId, period, periodDate])
+  @@index([guideId, period])
+  @@map("analytics_snapshots")
+}

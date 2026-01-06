@@ -1,0 +1,59 @@
+model Badge {
+  id          String     @id @default(uuid())
+  type        BadgeType  @unique
+  name        String
+  description String
+  icon        String     // Cloudinary URL or emoji
+  criteria    Json       // Rules to earn this badge
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  // Relations
+  touristBadges TouristBadge[]
+  guideBadges   GuideBadge[]
+
+  @@map("badges")
+}
+
+model TouristBadge {
+  id         String   @id @default(uuid())
+  touristId  String
+  badgeId    String
+  earnedAt   DateTime @default(now())
+
+  // Relations
+  tourist    Tourist  @relation(fields: [touristId], references: [id])
+  badge      Badge    @relation(fields: [badgeId], references: [id])
+
+  @@unique([touristId, badgeId])
+  @@map("tourist_badges")
+}
+
+model GuideBadge {
+  id         String   @id @default(uuid())
+  guideId    String
+  badgeId    String
+  earnedAt   DateTime @default(now())
+
+  // Relations
+  guide      Guide    @relation(fields: [guideId], references: [id])
+  badge      Badge    @relation(fields: [badgeId], references: [id])
+
+  @@unique([guideId, badgeId])
+  @@map("guide_badges")
+}
+
+model Leaderboard {
+  id         String          @id @default(uuid())
+  guideId    String
+  rank       Int
+  score      Float           // Calculated based on rating, bookings, reviews
+  period     AnalyticsPeriod
+  periodDate DateTime        // e.g., "2024-01-01" for monthly Jan 2024
+  createdAt  DateTime        @default(now())
+  updatedAt  DateTime        @updatedAt
+
+  @@unique([guideId, period, periodDate])
+  @@index([period, periodDate, rank])
+  @@map("leaderboards")
+}

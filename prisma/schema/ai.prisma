@@ -1,0 +1,32 @@
+model AIInteraction {
+  id          String   @id @default(uuid())
+  touristId   String
+  interactionType String // "recommendation", "chat", "preference_update"
+  prompt      String
+  response    Json     // Store AI response
+  metadata    Json?    // Additional context
+  createdAt   DateTime @default(now())
+
+  // Relations
+  tourist     Tourist  @relation(fields: [touristId], references: [id])
+
+  @@map("ai_interactions")
+}
+
+model AIRecommendation {
+  id          String   @id @default(uuid())
+  touristId   String?  // Null for anonymous users
+  listingId   String
+  score       Float    // Recommendation confidence score
+  reasons     String[] // Why this was recommended
+  shown       Boolean  @default(false)
+  clicked     Boolean  @default(false)
+  booked      Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  // Relations
+  listing     Listing  @relation(fields: [listingId], references: [id])
+
+  @@index([touristId, createdAt])
+  @@map("ai_recommendations")
+}

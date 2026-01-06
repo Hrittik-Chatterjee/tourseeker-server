@@ -1,0 +1,66 @@
+model Booking {
+  id                String        @id @default(uuid())
+  touristId         String
+  guideId           String
+  listingId         String
+  bookingDate       DateTime
+  numberOfPeople    Int
+  totalAmount       Float
+  status            BookingStatus @default(PENDING)
+  paymentStatus     PaymentStatus @default(PENDING)
+  specialRequests   String?
+  cancellationReason String?
+  isDeleted         Boolean       @default(false)
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+
+  // Relations
+  tourist           Tourist       @relation(fields: [touristId], references: [id])
+  guide             Guide         @relation(fields: [guideId], references: [id])
+  listing           Listing       @relation(fields: [listingId], references: [id])
+  payment           Payment?
+  review            Review?
+  conversation      Conversation?
+
+  @@map("bookings")
+}
+
+model Review {
+  id          String   @id @default(uuid())
+  bookingId   String   @unique
+  touristId   String
+  guideId     String
+  rating      Int      // 1-5
+  comment     String
+  response    String?  // Guide's response to review
+  isDeleted   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  booking     Booking  @relation(fields: [bookingId], references: [id])
+  tourist     Tourist  @relation(fields: [touristId], references: [id])
+  guide       Guide    @relation(fields: [guideId], references: [id])
+
+  @@map("reviews")
+}
+
+model Payment {
+  id                String        @id @default(uuid())
+  bookingId         String        @unique
+  amount            Float
+  currency          String        @default("usd")
+  stripePaymentId   String?       // Stripe payment intent ID
+  stripeSessionId   String?       // Stripe checkout session ID
+  status            PaymentStatus @default(PENDING)
+  paidAt            DateTime?
+  refundedAt        DateTime?
+  refundAmount      Float?
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+
+  // Relations
+  booking           Booking       @relation(fields: [bookingId], references: [id])
+
+  @@map("payments")
+}

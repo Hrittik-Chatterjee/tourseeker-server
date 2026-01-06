@@ -1,0 +1,97 @@
+model User {
+  id                 String     @id @default(uuid())
+  email              String     @unique
+  password           String
+  role               UserRole   @default(TOURIST)
+  needPasswordChange Boolean    @default(false)
+  status             UserStatus @default(ACTIVE)
+  createdAt          DateTime   @default(now())
+  updatedAt          DateTime   @updatedAt
+
+  // Relations
+  tourist            Tourist?
+  guide              Guide?
+  admin              Admin?
+
+  @@map("users")
+}
+
+model Tourist {
+  id               String   @id @default(uuid())
+  email            String   @unique
+  name             String
+  profilePhoto     String?
+  phoneNumber      String?
+  nationality      String?
+  dateOfBirth      DateTime?
+  bio              String?
+  preferences      Json?    // Store array of preferred categories, languages
+  explorerLevel    Int      @default(1)
+  totalToursBooked Int      @default(0)
+  isDeleted        Boolean  @default(false)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  // Relations
+  user             User              @relation(fields: [email], references: [email])
+  bookings         Booking[]
+  reviews          Review[]
+  badges           TouristBadge[]
+  aiInteractions   AIInteraction[]
+  conversations    ConversationParticipant[]
+  messages         Message[]
+
+  @@map("tourists")
+}
+
+model Guide {
+  id                  String         @id @default(uuid())
+  email               String         @unique
+  name                String
+  profilePhoto        String?
+  phoneNumber         String
+  bio                 String
+  languages           String[]       // ["English", "Spanish", "French"]
+  expertiseAreas      TourCategory[] // Areas of expertise
+  yearsOfExperience   Int            @default(0)
+  certifications      Json?          // Array of certification objects
+  city                String
+  country             String
+  pricePerHour        Float
+  rating              Float          @default(0)
+  totalReviews        Int            @default(0)
+  totalBookings       Int            @default(0)
+  totalRevenue        Float          @default(0)
+  isVerified          Boolean        @default(false)
+  isDeleted           Boolean        @default(false)
+  createdAt           DateTime       @default(now())
+  updatedAt           DateTime       @updatedAt
+
+  // Relations
+  user                User              @relation(fields: [email], references: [email])
+  listings            Listing[]
+  bookings            Booking[]
+  reviews             Review[]
+  badges              GuideBadge[]
+  analyticsSnapshots  AnalyticsSnapshot[]
+  conversations       ConversationParticipant[]
+  messages            Message[]
+
+  @@map("guides")
+}
+
+model Admin {
+  id            String   @id @default(uuid())
+  email         String   @unique
+  name          String
+  profilePhoto  String?
+  phoneNumber   String
+  isDeleted     Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relations
+  user          User     @relation(fields: [email], references: [email])
+
+  @@map("admins")
+}

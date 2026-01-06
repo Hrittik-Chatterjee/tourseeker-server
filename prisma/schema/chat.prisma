@@ -1,0 +1,55 @@
+model Conversation {
+  id          String   @id @default(uuid())
+  bookingId   String?  @unique  // Optional: link to booking
+  lastMessage String?
+  lastMessageAt DateTime?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  booking     Booking?  @relation(fields: [bookingId], references: [id])
+  participants ConversationParticipant[]
+  messages    Message[]
+
+  @@map("conversations")
+}
+
+model ConversationParticipant {
+  id             String   @id @default(uuid())
+  conversationId String
+  touristId      String?
+  guideId        String?
+  unreadCount    Int      @default(0)
+  joinedAt       DateTime @default(now())
+
+  // Relations
+  conversation   Conversation @relation(fields: [conversationId], references: [id])
+  tourist        Tourist?     @relation(fields: [touristId], references: [id])
+  guide          Guide?       @relation(fields: [guideId], references: [id])
+
+  @@unique([conversationId, touristId])
+  @@unique([conversationId, guideId])
+  @@map("conversation_participants")
+}
+
+model Message {
+  id             String        @id @default(uuid())
+  conversationId String
+  senderId       String        // Can be tourist or guide
+  senderType     UserRole      // TOURIST or GUIDE
+  content        String
+  attachments    String[]      // Array of URLs
+  status         MessageStatus @default(SENT)
+  isDeleted      Boolean       @default(false)
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  // Relations
+  conversation   Conversation  @relation(fields: [conversationId], references: [id])
+  tourist        Tourist?      @relation(fields: [senderId], references: [id])
+  guide          Guide?        @relation(fields: [senderId], references: [id])
+
+  @@index([conversationId, createdAt])
+  @@map("messages")
+}
