@@ -43,3 +43,5 @@ coverage/
 # Temporary files
 *.tmp
 temp/
+.claude.md
+.IMPLEMENTATION_GUIDE.md
