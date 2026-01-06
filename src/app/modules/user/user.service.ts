@@ -23,8 +23,10 @@ const getUserById = async (userId: string) => {
               id: true,
               title: true,
               images: true,
-              price: true,
-              rating: true,
+              pricePerPerson: true,
+              duration: true,
+              city: true,
+              country: true,
             },
           },
           reviews: {
@@ -204,31 +206,31 @@ const uploadProfilePhoto = async (userId: string, file: any) => {
   }
 
   // Upload to Cloudinary
-  const uploadedImage = await uploadToCloudinary(
-    file,
-    `tourseeker/profiles/${user.role.toLowerCase()}s`
+  const uploadedImageUrl = await uploadToCloudinary(
+    file.buffer,
+    `profiles/${user.role.toLowerCase()}s`
   );
 
   // Update profile photo based on role
   if (user.role === UserRole.TOURIST && user.tourist) {
     await prisma.tourist.update({
       where: { email: user.email },
-      data: { profilePhoto: uploadedImage.secure_url },
+      data: { profilePhoto: uploadedImageUrl },
     });
   } else if (user.role === UserRole.GUIDE && user.guide) {
     await prisma.guide.update({
       where: { email: user.email },
-      data: { profilePhoto: uploadedImage.secure_url },
+      data: { profilePhoto: uploadedImageUrl },
     });
   } else if (user.role === UserRole.ADMIN && user.admin) {
     await prisma.admin.update({
       where: { email: user.email },
-      data: { profilePhoto: uploadedImage.secure_url },
+      data: { profilePhoto: uploadedImageUrl },
     });
   }
 
   return {
-    profilePhoto: uploadedImage.secure_url,
+    profilePhoto: uploadedImageUrl,
   };
 };
 
