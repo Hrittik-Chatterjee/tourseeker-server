@@ -52,16 +52,22 @@ const getAllListings = async (filters: IListingFilters) => {
     category,
     city,
     country,
-    minPrice,
-    maxPrice,
+    minPrice: minPriceRaw,
+    maxPrice: maxPriceRaw,
     language,
-    minDuration,
-    maxDuration,
+    minDuration: minDurationRaw,
+    maxDuration: maxDurationRaw,
     page = 1,
     limit = 10,
     sortBy = "createdAt",
     sortOrder = "desc",
   } = filters;
+
+  // Convert string numbers to actual numbers
+  const minPrice = minPriceRaw ? Number(minPriceRaw) : undefined;
+  const maxPrice = maxPriceRaw ? Number(maxPriceRaw) : undefined;
+  const minDuration = minDurationRaw ? Number(minDurationRaw) : undefined;
+  const maxDuration = maxDurationRaw ? Number(maxDurationRaw) : undefined;
 
   // Build where clause
   const where: Prisma.ListingWhereInput = {
