@@ -15,6 +15,13 @@ app.use(
   })
 );
 
+// Stripe webhook endpoint (requires raw body)
+// MUST be before express.json() middleware
+app.use(
+  "/api/v1/payments/webhook",
+  express.raw({ type: "application/json" })
+);
+
 // Parsers
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
