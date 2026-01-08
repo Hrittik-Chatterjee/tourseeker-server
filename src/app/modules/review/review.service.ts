@@ -34,82 +34,77 @@ const createReview = async (touristId: string, payload: ICreateReview) => {
     throw new Error("Only completed bookings can be reviewed");
   }
 
-  // Verify review doesn't already exist
-  if (booking.review) {
+  // Verify review doesn't already exist (only check non-deleted reviews)
+  if (booking.review && !booking.review.isDeleted) {
     throw new Error("You have already reviewed this booking");
   }
 
-  // Create review and update guide stats in a transaction
-  const result = await prisma.$transaction(async (tx) => {
-    // Create review
-    const review = await tx.review.create({
-      data: {
-        bookingId: payload.bookingId,
-        touristId,
-        guideId: booking.guideId,
-        rating: payload.rating,
-        comment: payload.comment,
+  // Create review
+  const review = await prisma.review.create({
+    data: {
+      bookingId: payload.bookingId,
+      touristId,
+      guideId: booking.guideId,
+      rating: payload.rating,
+      comment: payload.comment,
+    },
+    include: {
+      tourist: {
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          profilePhoto: true,
+        },
       },
-      include: {
-        tourist: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-            profilePhoto: true,
-          },
+      guide: {
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          profilePhoto: true,
         },
-        guide: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-            profilePhoto: true,
-          },
-        },
-        booking: {
-          select: {
-            id: true,
-            bookingDate: true,
-            listing: {
-              select: {
-                id: true,
-                title: true,
-                images: true,
-              },
+      },
+      booking: {
+        select: {
+          id: true,
+          bookingDate: true,
+          listing: {
+            select: {
+              id: true,
+              title: true,
+              images: true,
             },
           },
         },
       },
-    });
-
-    // Update guide rating stats
-    const guideReviews = await tx.review.findMany({
-      where: {
-        guideId: booking.guideId,
-        isDeleted: false,
-      },
-      select: {
-        rating: true,
-      },
-    });
-
-    const totalReviews = guideReviews.length;
-    const averageRating =
-      guideReviews.reduce((sum, r) => sum + r.rating, 0) / totalReviews;
-
-    await tx.guide.update({
-      where: { id: booking.guideId },
-      data: {
-        totalReviews,
-        averageRating: Number(averageRating.toFixed(2)),
-      },
-    });
-
-    return review;
+    },
   });
 
-  return result;
+  // Update guide rating stats
+  const guideReviews = await prisma.review.findMany({
+    where: {
+      guideId: booking.guideId,
+      isDeleted: false,
+    },
+    select: {
+      rating: true,
+    },
+  });
+
+  const totalReviews = guideReviews.length;
+  const rating =
+    guideReviews.reduce((sum, r) => sum + r.rating, 0) / totalReviews;
+
+  await prisma.guide.update({
+    where: { id: booking.guideId },
+    data: {
+      totalReviews,
+      rating: Number(rating.toFixed(2)),
+    },
+  });
+
+  return review;
 };
 
 // Get my reviews (Tourist only)
@@ -123,7 +118,7 @@ const getMyReviews = async (touristId: string, filters: IReviewFilters) => {
   };
 
   if (rating) {
-    where.rating = rating;
+    where.rating = Number(rating);
   }
 
   // Calculate pagination
@@ -204,7 +199,7 @@ const getGuideReviews = async (guideId: string, filters: IReviewFilters) => {
   };
 
   if (rating) {
-    where.rating = rating;
+    where.rating = Number(rating);
   }
 
   // Calculate pagination
@@ -283,7 +278,7 @@ const getListingReviews = async (listingId: string, filters: IReviewFilters) => 
   };
 
   if (rating) {
-    where.rating = rating;
+    where.rating = Number(rating);
   }
 
   // Calculate pagination
@@ -425,7 +420,7 @@ const deleteReview = async (reviewId: string, touristId: string) => {
     });
 
     const totalReviews = guideReviews.length;
-    const averageRating =
+    const rating =
       totalReviews > 0
         ? guideReviews.reduce((sum, r) => sum + r.rating, 0) / totalReviews
         : 0;
@@ -434,7 +429,7 @@ const deleteReview = async (reviewId: string, touristId: string) => {
       where: { id: review.guideId },
       data: {
         totalReviews,
-        averageRating: Number(averageRating.toFixed(2)),
+        rating: Number(rating.toFixed(2)),
       },
     });
   });
