@@ -34,7 +34,7 @@
     "jsonwebtoken": "^9.0.2",
     "multer": "^2.0.2",
     "pusher": "^5.2.0",
-    "stripe": "^17.6.0",
+    "stripe": "^17.7.0",
     "zod": "^3.24.1"
   },
   "devDependencies": {
