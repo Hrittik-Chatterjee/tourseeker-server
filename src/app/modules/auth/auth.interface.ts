@@ -1,4 +1,4 @@
-import { UserRole } from "@prisma/client";
+import { UserRole, TourCategory } from "@prisma/client";
 
 export interface IRegisterTourist {
   email: string;
@@ -17,7 +17,7 @@ export interface IRegisterGuide {
   phoneNumber: string;
   bio: string;
   languages: string[];
-  expertiseAreas: string[];
+  expertiseAreas: TourCategory[];
   city: string;
   country: string;
   pricePerHour: number;

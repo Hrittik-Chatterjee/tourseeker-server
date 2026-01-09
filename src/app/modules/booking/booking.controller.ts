@@ -3,15 +3,16 @@ import httpStatus from "http-status";
 import catchAsync from "../../shared/catchAsync";
 import sendResponse from "../../shared/sendResponse";
 import { BookingService } from "./booking.service";
+import { prisma } from "../../shared/prisma";
 
 // Create booking (Tourist only)
 const createBooking = catchAsync(async (req: Request, res: Response) => {
-  const user = (req as any).user;
+  const user = req.user!;
 
   // Get tourist ID from user's email
-  const tourist = await import("../../shared/prisma").then((m) =>
-    m.prisma.tourist.findUnique({ where: { email: user.email } })
-  );
+  const tourist = await prisma.tourist.findUnique({
+    where: { email: user.email }
+  });
 
   if (!tourist) {
     return sendResponse(res, {
@@ -34,16 +35,12 @@ const createBooking = catchAsync(async (req: Request, res: Response) => {
 
 // Get my bookings (Tourist or Guide)
 const getMyBookings = catchAsync(async (req: Request, res: Response) => {
-  const user = (req as any).user;
+  const user = req.user!;
 
   // Get profile ID based on role
-  const profile = await import("../../shared/prisma").then((m) => {
-    if (user.role === "TOURIST") {
-      return m.prisma.tourist.findUnique({ where: { email: user.email } });
-    } else {
-      return m.prisma.guide.findUnique({ where: { email: user.email } });
-    }
-  });
+  const profile = user.role === "TOURIST"
+    ? await prisma.tourist.findUnique({ where: { email: user.email } })
+    : await prisma.guide.findUnique({ where: { email: user.email } });
 
   if (!profile) {
     return sendResponse(res, {
@@ -68,7 +65,7 @@ const getMyBookings = catchAsync(async (req: Request, res: Response) => {
 // Get booking by ID
 const getBookingById = catchAsync(async (req: Request, res: Response) => {
   const { id } = req.params;
-  const user = (req as any).user;
+  const user = req.user!;
 
   const result = await BookingService.getBookingById(id, user.userId, user.role);
 
@@ -83,12 +80,12 @@ const getBookingById = catchAsync(async (req: Request, res: Response) => {
 // Update booking status (Guide only)
 const updateBookingStatus = catchAsync(async (req: Request, res: Response) => {
   const { id } = req.params;
-  const user = (req as any).user;
+  const user = req.user!;
 
   // Get guide ID from user's email
-  const guide = await import("../../shared/prisma").then((m) =>
-    m.prisma.guide.findUnique({ where: { email: user.email } })
-  );
+  const guide = await prisma.guide.findUnique({
+    where: { email: user.email }
+  });
 
   if (!guide) {
     return sendResponse(res, {
@@ -112,12 +109,12 @@ const updateBookingStatus = catchAsync(async (req: Request, res: Response) => {
 // Complete booking (Guide only)
 const completeBooking = catchAsync(async (req: Request, res: Response) => {
   const { id } = req.params;
-  const user = (req as any).user;
+  const user = req.user!;
 
   // Get guide ID from user's email
-  const guide = await import("../../shared/prisma").then((m) =>
-    m.prisma.guide.findUnique({ where: { email: user.email } })
-  );
+  const guide = await prisma.guide.findUnique({
+    where: { email: user.email }
+  });
 
   if (!guide) {
     return sendResponse(res, {
@@ -141,7 +138,7 @@ const completeBooking = catchAsync(async (req: Request, res: Response) => {
 // Cancel booking (Tourist or Guide)
 const cancelBooking = catchAsync(async (req: Request, res: Response) => {
   const { id } = req.params;
-  const user = (req as any).user;
+  const user = req.user!;
   const { cancellationReason } = req.body;
 
   const result = await BookingService.cancelBooking(
@@ -162,12 +159,12 @@ const cancelBooking = catchAsync(async (req: Request, res: Response) => {
 // Get listing bookings (Guide only)
 const getListingBookings = catchAsync(async (req: Request, res: Response) => {
   const { listingId } = req.params;
-  const user = (req as any).user;
+  const user = req.user!;
 
   // Get guide ID from user's email
-  const guide = await import("../../shared/prisma").then((m) =>
-    m.prisma.guide.findUnique({ where: { email: user.email } })
-  );
+  const guide = await prisma.guide.findUnique({
+    where: { email: user.email }
+  });
 
   if (!guide) {
     return sendResponse(res, {

@@ -16,13 +16,17 @@ import { UserRole } from "@prisma/client";
 
 // Helper function to generate JWT tokens
 const generateTokens = (payload: IAuthUser): ITokens => {
-  const accessToken = jwt.sign(payload, config.jwt_secret as string, {
-    expiresIn: config.jwt_expires_in,
-  });
+  const accessToken = jwt.sign(
+    payload,
+    config.jwt_secret!,
+    { expiresIn: config.jwt_expires_in as any }
+  );
 
-  const refreshToken = jwt.sign(payload, config.jwt_refresh_secret as string, {
-    expiresIn: config.jwt_refresh_expires_in,
-  });
+  const refreshToken = jwt.sign(
+    payload,
+    config.jwt_refresh_secret!,
+    { expiresIn: config.jwt_refresh_expires_in as any }
+  );
 
   return { accessToken, refreshToken };
 };

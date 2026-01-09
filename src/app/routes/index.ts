@@ -10,6 +10,7 @@ import { GamificationRoutes } from "../modules/gamification/gamification.routes"
 import { AIRoutes } from "../modules/ai/ai.routes";
 import { AnalyticsRoutes } from "../modules/analytics/analytics.routes";
 import { AdminRoutes } from "../modules/admin/admin.routes";
+import { UploadRoutes } from "../modules/upload/upload.routes";
 
 const router = express.Router();
 
@@ -57,6 +58,10 @@ const moduleRoutes = [
   {
     path: "/admin",
     route: AdminRoutes,
+  },
+  {
+    path: "/upload",
+    route: UploadRoutes,
   },
 ];
 

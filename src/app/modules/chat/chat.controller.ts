@@ -6,8 +6,8 @@ import { ChatService } from "./chat.service";
 
 // Send message
 const sendMessage = catchAsync(async (req: Request, res: Response) => {
-  const userId = req.user.userId;
-  const role = req.user.role;
+  const userId = req.user!.userId;
+  const role = req.user!.role;
 
   const result = await ChatService.sendMessage(userId, role, req.body);
 
@@ -21,8 +21,8 @@ const sendMessage = catchAsync(async (req: Request, res: Response) => {
 
 // Get messages for a conversation
 const getMessages = catchAsync(async (req: Request, res: Response) => {
-  const userId = req.user.userId;
-  const role = req.user.role;
+  const userId = req.user!.userId;
+  const role = req.user!.role;
   const conversationId = req.params.conversationId;
 
   const result = await ChatService.getMessages(userId, role, {
@@ -42,8 +42,8 @@ const getMessages = catchAsync(async (req: Request, res: Response) => {
 
 // Get user's conversations
 const getMyConversations = catchAsync(async (req: Request, res: Response) => {
-  const userId = req.user.userId;
-  const role = req.user.role;
+  const userId = req.user!.userId;
+  const role = req.user!.role;
 
   const result = await ChatService.getMyConversations(userId, role, {
     page: Number(req.query.page) || 1,
@@ -61,8 +61,8 @@ const getMyConversations = catchAsync(async (req: Request, res: Response) => {
 
 // Mark conversation as read
 const markAsRead = catchAsync(async (req: Request, res: Response) => {
-  const userId = req.user.userId;
-  const role = req.user.role;
+  const userId = req.user!.userId;
+  const role = req.user!.role;
   const conversationId = req.params.conversationId;
 
   const result = await ChatService.markAsRead(userId, role, {

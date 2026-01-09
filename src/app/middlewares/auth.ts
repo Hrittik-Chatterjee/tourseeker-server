@@ -3,13 +3,10 @@ import jwt, { JwtPayload } from "jsonwebtoken";
 import httpStatus from "http-status";
 import config from "../../config";
 import { prisma } from "../shared/prisma";
-
-interface CustomRequest extends Request {
-  user?: JwtPayload;
-}
+import { UserRole } from "@prisma/client";
 
 const auth = (...roles: string[]) => {
-  return async (req: CustomRequest, res: Response, next: NextFunction) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
     try {
       const token = req.headers.authorization;
 
@@ -23,7 +20,7 @@ const auth = (...roles: string[]) => {
       const verifiedToken = jwt.verify(
         token,
         config.jwt_secret as string
-      ) as JwtPayload;
+      ) as JwtPayload & { userId: string; email: string; role: UserRole };
 
       req.user = verifiedToken;
 
