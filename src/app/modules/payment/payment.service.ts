@@ -10,7 +10,7 @@ import {
 
 // Initialize Stripe
 const stripe = new Stripe(config.stripe_secret_key as string, {
-  apiVersion: "2024-12-18.acacia",
+  apiVersion: "2025-02-24.acacia",
 });
 
 // Create payment session (Stripe Checkout)
@@ -323,12 +323,12 @@ const processRefund = async (
     throw new Error("Payment not found");
   }
 
-  if (payment.status !== PaymentStatus.COMPLETED) {
-    throw new Error("Only completed payments can be refunded");
-  }
-
   if (payment.status === PaymentStatus.REFUNDED) {
     throw new Error("Payment has already been refunded");
+  }
+
+  if (payment.status !== PaymentStatus.COMPLETED) {
+    throw new Error("Only completed payments can be refunded");
   }
 
   // Verify user is the guide or admin
