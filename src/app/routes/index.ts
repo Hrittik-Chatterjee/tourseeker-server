@@ -9,6 +9,7 @@ import { ChatRoutes } from "../modules/chat/chat.routes";
 import { GamificationRoutes } from "../modules/gamification/gamification.routes";
 import { AIRoutes } from "../modules/ai/ai.routes";
 import { AnalyticsRoutes } from "../modules/analytics/analytics.routes";
+import { AdminRoutes } from "../modules/admin/admin.routes";
 
 const router = express.Router();
 
@@ -52,6 +53,10 @@ const moduleRoutes = [
   {
     path: "/analytics",
     route: AnalyticsRoutes,
+  },
+  {
+    path: "/admin",
+    route: AdminRoutes,
   },
 ];
 
