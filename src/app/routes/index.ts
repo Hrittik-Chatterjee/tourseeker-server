@@ -7,6 +7,7 @@ import { ReviewRoutes } from "../modules/review/review.routes";
 import { PaymentRoutes } from "../modules/payment/payment.routes";
 import { ChatRoutes } from "../modules/chat/chat.routes";
 import { GamificationRoutes } from "../modules/gamification/gamification.routes";
+import { AIRoutes } from "../modules/ai/ai.routes";
 
 const router = express.Router();
 
@@ -42,6 +43,10 @@ const moduleRoutes = [
   {
     path: "/gamification",
     route: GamificationRoutes,
+  },
+  {
+    path: "/ai",
+    route: AIRoutes,
   },
 ];
 
