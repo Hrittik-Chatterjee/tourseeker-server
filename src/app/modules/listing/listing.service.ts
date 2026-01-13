@@ -57,13 +57,15 @@ const getAllListings = async (filters: IListingFilters) => {
     language,
     minDuration: minDurationRaw,
     maxDuration: maxDurationRaw,
-    page = 1,
-    limit = 10,
+    page: pageRaw = 1,
+    limit: limitRaw = 10,
     sortBy = "createdAt",
     sortOrder = "desc",
   } = filters;
 
   // Convert string numbers to actual numbers
+  const page = Number(pageRaw) || 1;
+  const limit = Number(limitRaw) || 10;
   const minPrice = minPriceRaw ? Number(minPriceRaw) : undefined;
   const maxPrice = maxPriceRaw ? Number(maxPriceRaw) : undefined;
   const minDuration = minDurationRaw ? Number(minDurationRaw) : undefined;
