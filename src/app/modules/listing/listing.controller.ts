@@ -48,7 +48,7 @@ const getAllListings = catchAsync(async (req: Request, res: Response) => {
 // Get listing by ID
 const getListingById = catchAsync(async (req: Request, res: Response) => {
   const { id } = req.params;
-  const result = await ListingService.getListingById(id);
+  const result = await ListingService.getListingById(String(id));
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -77,7 +77,7 @@ const updateListing = catchAsync(async (req: Request, res: Response) => {
     });
   }
 
-  const result = await ListingService.updateListing(id, guide.id, req.body);
+  const result = await ListingService.updateListing(String(id), guide.id, req.body);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -106,7 +106,7 @@ const deleteListing = catchAsync(async (req: Request, res: Response) => {
     });
   }
 
-  const result = await ListingService.deleteListing(id, guide.id);
+  const result = await ListingService.deleteListing(String(id), guide.id);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -145,7 +145,7 @@ const uploadListingImages = catchAsync(async (req: Request, res: Response) => {
     });
   }
 
-  const result = await ListingService.uploadListingImages(id, guide.id, files);
+  const result = await ListingService.uploadListingImages(String(id), guide.id, files);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,

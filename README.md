@@ -2,6 +2,19 @@
 
 > Local Guide Platform - Connecting travelers with passionate local experts
 
+---
+
+## ⚠️ Workspace Setup
+
+**This is the BACKEND repository** - Open in a separate VSCode workspace.
+
+- **Backend**: `tourseeker-server` (This repo) - https://github.com/Hrittik-Chatterjee/tourseeker-server
+- **Frontend**: `tourseeker-client` (Separate repo) - https://github.com/Hrittik-Chatterjee/tourseeker-client
+
+**Production API**: https://tourseeker-server-production.up.railway.app
+
+---
+
 ## 🚀 Quick Start
 
 ```bash

@@ -37,7 +37,7 @@ const getPaymentById = catchAsync(async (req: Request, res: Response) => {
   const { id } = req.params;
   const user = (req as any).user;
 
-  const result = await PaymentService.getPaymentById(id, user.userId);
+  const result = await PaymentService.getPaymentById(String(id), user.userId);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -71,7 +71,7 @@ const processRefund = catchAsync(async (req: Request, res: Response) => {
   const { id } = req.params;
   const user = (req as any).user;
 
-  const result = await PaymentService.processRefund(id, user.userId, req.body);
+  const result = await PaymentService.processRefund(String(id), user.userId, req.body);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,

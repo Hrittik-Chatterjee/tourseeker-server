@@ -67,7 +67,7 @@ const getBookingById = catchAsync(async (req: Request, res: Response) => {
   const { id } = req.params;
   const user = req.user!;
 
-  const result = await BookingService.getBookingById(id, user.userId, user.role);
+  const result = await BookingService.getBookingById(String(id), user.userId, user.role);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -96,7 +96,7 @@ const updateBookingStatus = catchAsync(async (req: Request, res: Response) => {
     });
   }
 
-  const result = await BookingService.updateBookingStatus(id, guide.id, req.body);
+  const result = await BookingService.updateBookingStatus(String(id), guide.id, req.body);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -125,7 +125,7 @@ const completeBooking = catchAsync(async (req: Request, res: Response) => {
     });
   }
 
-  const result = await BookingService.completeBooking(id, guide.id);
+  const result = await BookingService.completeBooking(String(id), guide.id);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -142,7 +142,7 @@ const cancelBooking = catchAsync(async (req: Request, res: Response) => {
   const { cancellationReason } = req.body;
 
   const result = await BookingService.cancelBooking(
-    id,
+    String(id),
     user.userId,
     user.role,
     cancellationReason
@@ -175,7 +175,7 @@ const getListingBookings = catchAsync(async (req: Request, res: Response) => {
     });
   }
 
-  const result = await BookingService.getListingBookings(listingId, guide.id, req.query);
+  const result = await BookingService.getListingBookings(String(listingId), guide.id, req.query);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,

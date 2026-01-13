@@ -23,7 +23,7 @@ const sendMessage = catchAsync(async (req: Request, res: Response) => {
 const getMessages = catchAsync(async (req: Request, res: Response) => {
   const userId = req.user!.userId;
   const role = req.user!.role;
-  const conversationId = req.params.conversationId;
+  const conversationId = String(req.params.conversationId);
 
   const result = await ChatService.getMessages(userId, role, {
     conversationId,
@@ -63,7 +63,7 @@ const getMyConversations = catchAsync(async (req: Request, res: Response) => {
 const markAsRead = catchAsync(async (req: Request, res: Response) => {
   const userId = req.user!.userId;
   const role = req.user!.role;
-  const conversationId = req.params.conversationId;
+  const conversationId = String(req.params.conversationId);
 
   const result = await ChatService.markAsRead(userId, role, {
     conversationId,

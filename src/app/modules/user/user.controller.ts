@@ -7,7 +7,7 @@ import { UserService } from "./user.service";
 // Get user by ID (public)
 const getUserById = catchAsync(async (req: Request, res: Response) => {
   const { id } = req.params;
-  const result = await UserService.getUserById(id);
+  const result = await UserService.getUserById(String(id));
 
   sendResponse(res, {
     statusCode: httpStatus.OK,

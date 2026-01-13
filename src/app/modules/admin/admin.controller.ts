@@ -26,7 +26,7 @@ const getAllUsers = catchAsync(async (req: Request, res: Response) => {
 });
 
 const blockUser = catchAsync(async (req: Request, res: Response) => {
-    const result = await AdminService.blockUser(req.params.id);
+    const result = await AdminService.blockUser(String(req.params.id));
     sendResponse(res, {
         statusCode: httpStatus.OK,
         success: true,
@@ -36,7 +36,7 @@ const blockUser = catchAsync(async (req: Request, res: Response) => {
 });
 
 const verifyGuide = catchAsync(async (req: Request, res: Response) => {
-    const result = await AdminService.verifyGuide(req.params.id);
+    const result = await AdminService.verifyGuide(String(req.params.id));
     sendResponse(res, {
         statusCode: httpStatus.OK,
         success: true,
